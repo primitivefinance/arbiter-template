@@ -18,12 +18,12 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     let mut manager = SimulationManager::new();
     // Add a new environment
     manager.add_environment(TEST_ENV_LABEL.clone().to_string())?;
-    let mut environment = manager.environments.get_mut(TEST_ENV_LABEL).unwrap();
+    let environment = manager.environments.get_mut(TEST_ENV_LABEL).unwrap();
     // Add a new agent to the environment
     environment.add_agent(TEST_AGENT_NAME.to_string());
     let agent = environment.clients.get(TEST_AGENT_NAME).unwrap();
     // Deploy a new ArbiterToken contract
-    let token = ArbiterToken::deploy(agent.client, (
+    let token = ArbiterToken::deploy(agent.client.clone(), (
             TEST_ARG_NAME.to_string(),
             TEST_ARG_SYMBOL.to_string(),
             TEST_ARG_DECIMALS,
@@ -33,10 +33,8 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     println!("Deployed ArbiterToken to address: {}", token.address());
 
     // deploy counter contract
-    let counter = Counter::deploy(agent.client, ())?.send().await?;
+    let counter = Counter::deploy(agent.client.clone(), ())?.send().await?;
     println!("Deployed Counter to address: {}", counter.address());
-    
-
 
     Ok(())
 }

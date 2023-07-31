@@ -6,4 +6,4 @@ edition = "2021"
 [dependencies]
 arbiter-core = { git = "https://github.com/primitivefinance/arbiter", branch = "waylon/time_oracle" }
 tokio = { version = "1.11.0", features = ["full"] }
-ethers = { version = "2.0.8" }
+ethers = { git = "https://github.com/primitivefinance/ethers-rs" }
