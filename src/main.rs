@@ -1,5 +1,5 @@
 
-use std::{error::Error};
+use std::error::Error;
 use arbiter_core::{bindings::arbiter_token::ArbiterToken, manager::SimulationManager};
 
 use crate::bindings::counter::Counter;
