@@ -1,0 +1,12 @@
+[[bin]]
+name = "example_sim"
+path = "arbiter/src/main.rs"
+
+[dependencies.simulate]
+git = "https://github.com/primitivefinance/arbiter"
+package = "simulate"
+
+[package]
+edition = "2021"
+name = "example_sim"
+version = "0.1.0"
