@@ -120,6 +120,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "arbiter-core"
+version = "0.3.0"
+source = "git+https://github.com/primitivefinance/arbiter?branch=waylon/time_oracle#dc3a4b074e4fdd009ed70fb99447dac45c558e65"
+dependencies = [
+ "RustQuant",
+ "anyhow",
+ "async-trait",
+ "bytes",
+ "crossbeam-channel",
+ "dashmap",
+ "ethers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "hex",
+ "rand",
+ "rand_chacha",
+ "rand_distr",
+ "revm",
+ "serde",
+ "serde_json",
+ "statrs",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
 name = "ark-ff"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -650,29 +674,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6245d59a3e82a7fc217c5828a6692dbc6dfb63a0c8c90495621f7b9d79704a0e"
 
 [[package]]
-name = "core"
-version = "0.3.0"
-source = "git+https://github.com/primitivefinance/arbiter?branch=waylon/time_oracle#5e2a1eb0245d14d8f30531c5c77c189fbe0f0afb"
-dependencies = [
- "RustQuant",
- "anyhow",
- "async-trait",
- "bytes",
- "crossbeam-channel",
- "ethers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "hex",
- "rand",
- "rand_chacha",
- "rand_distr",
- "revm",
- "serde",
- "serde_json",
- "statrs",
- "thiserror",
- "tokio",
-]
-
-[[package]]
 name = "core-foundation"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -820,6 +821,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0369ee1ad671834580515889b80f2ea915f23b8be8d0daa4bbaf2ac5c7590835"
 dependencies = [
  "cipher",
+]
+
+[[package]]
+name = "dashmap"
+version = "5.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6943ae99c34386c84a470c499d3414f66502a41340aa895406e0d2e4a207b91d"
+dependencies = [
+ "cfg-if",
+ "hashbrown 0.14.0",
+ "lock_api",
+ "once_cell",
+ "parking_lot_core",
 ]
 
 [[package]]
@@ -1145,16 +1159,16 @@ dependencies = [
 [[package]]
 name = "ethers"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
- "ethers-addressbook 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-contract 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-etherscan 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-middleware 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-providers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-signers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-solc 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-addressbook 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-contract 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-etherscan 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-middleware 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-providers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-signers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-solc 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
 ]
 
 [[package]]
@@ -1172,9 +1186,9 @@ dependencies = [
 [[package]]
 name = "ethers-addressbook"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
  "once_cell",
  "serde",
  "serde_json",
@@ -1203,13 +1217,13 @@ dependencies = [
 [[package]]
 name = "ethers-contract"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
- "ethers-contract-abigen 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-contract-derive 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-providers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-signers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-contract-abigen 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-contract-derive 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-providers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-signers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
  "futures-util",
  "hex",
  "once_cell",
@@ -1246,12 +1260,12 @@ dependencies = [
 [[package]]
 name = "ethers-contract-abigen"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
  "Inflector",
  "dunce",
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-etherscan 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-etherscan 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
  "eyre",
  "hex",
  "prettyplease",
@@ -1285,11 +1299,11 @@ dependencies = [
 [[package]]
 name = "ethers-contract-derive"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
  "Inflector",
- "ethers-contract-abigen 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-contract-abigen 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
  "hex",
  "proc-macro2",
  "quote",
@@ -1330,7 +1344,7 @@ dependencies = [
 [[package]]
 name = "ethers-core"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
  "arrayvec",
  "bytes",
@@ -1374,9 +1388,9 @@ dependencies = [
 [[package]]
 name = "ethers-etherscan"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
  "reqwest",
  "semver 1.0.18",
  "serde",
@@ -1415,15 +1429,15 @@ dependencies = [
 [[package]]
 name = "ethers-middleware"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
  "async-trait",
  "auto_impl",
- "ethers-contract 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-etherscan 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-providers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
- "ethers-signers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-contract 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-etherscan 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-providers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
+ "ethers-signers 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
  "futures-channel",
  "futures-locks",
  "futures-util",
@@ -1477,14 +1491,14 @@ dependencies = [
 [[package]]
 name = "ethers-providers"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
  "async-trait",
  "auto_impl",
  "base64 0.21.2",
  "bytes",
  "enr",
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
  "futures-core",
  "futures-timer",
  "futures-util",
@@ -1531,14 +1545,14 @@ dependencies = [
 [[package]]
 name = "ethers-signers"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
  "async-trait",
  "coins-bip32",
  "coins-bip39",
  "elliptic-curve",
  "eth-keystore",
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
  "hex",
  "rand",
  "sha2 0.10.7",
@@ -1580,11 +1594,11 @@ dependencies = [
 [[package]]
 name = "ethers-solc"
 version = "2.0.8"
-source = "git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number#38dff4c56542157c466ee339bcce1bf6bbaaa125"
+source = "git+https://github.com/primitivefinance/ethers-rs.git#5ef227c7043fc83b914c962c50e9dcf598392b46"
 dependencies = [
  "cfg-if",
  "dunce",
- "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git?branch=add_block_number)",
+ "ethers-core 2.0.8 (git+https://github.com/primitivefinance/ethers-rs.git)",
  "glob",
  "hex",
  "home",
@@ -1611,7 +1625,7 @@ dependencies = [
 name = "example_sim"
 version = "0.1.0"
 dependencies = [
- "core",
+ "arbiter-core",
  "ethers 2.0.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio",
 ]
