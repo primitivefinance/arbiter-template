@@ -1,10 +1,11 @@
 
-use std::error::Error;
-use arbiter_core::{bindings::arbiter_token::ArbiterToken, manager::SimulationManager};
+use std::{error::Error, env};
+use arbiter_core::{bindings::arbiter_token::ArbiterToken, manager::SimulationManager, agent::Agent};
 
 use crate::bindings::counter::Counter;
 
 mod bindings;
+mod behaviors;
 
 const TEST_ENV_LABEL: &str = "test";
 const TEST_AGENT_NAME: &str = "test_agent";
@@ -18,27 +19,30 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     let mut manager = SimulationManager::new();
     // Add a new environment
     manager.add_environment(TEST_ENV_LABEL.clone().to_string())?;
+    manager.configure_lambda(100.00, TEST_ENV_LABEL.clone().to_string())?;
     manager.run_environment(TEST_ENV_LABEL.clone().to_string())?;
     // Add a new agent to the environment
-    let environment = manager.environments.get_mut(TEST_ENV_LABEL).unwrap();
+    manager.add_agent(TEST_AGENT_NAME.to_string(), TEST_ENV_LABEL.clone().to_string())?;
 
-    environment.add_agent(TEST_AGENT_NAME.to_string());
-    let agent = environment.clients.get(TEST_AGENT_NAME).unwrap();
+    // TODO Need to create a new agent and add it to the environment
+    // maybe something like this: 
+    // let bob = Agent::new("name".to_owned(), manager.environments.get(&TEST_ENV_LABEL.clone().to_string()));
+    // bob.add_behavior("test".to_owned(), behaviors::TestBehavior::new());
+    // Probably read up on artemis
+
+
     // Deploy a new ArbiterToken contract
-    let token = ArbiterToken::deploy(agent.client.clone(), (
-            TEST_ARG_NAME.to_string(),
-            TEST_ARG_SYMBOL.to_string(),
-            TEST_ARG_DECIMALS,
-        ),
-    )?
-    .send().await?;
-    println!("Deployed ArbiterToken to address: {}", token.address());
+    // let token = ArbiterToken::deploy(agent.client.clone(), (
+    //         TEST_ARG_NAME.to_string(),
+    //         TEST_ARG_SYMBOL.to_string(),
+    //         TEST_ARG_DECIMALS,
+    //     ),
+    // )?
+    // .send().await?;
+    // println!("Deployed ArbiterToken to address: {}", token.address());
 
-    // deploy counter contract
-    let counter = Counter::deploy(agent.client.clone(), ())?.send().await?;
-    println!("Deployed Counter to address: {}", counter.address());
-
-
-
+    // // deploy counter contract
+    // let counter = Counter::deploy(agent.client.clone(), ())?.send().await?;
+    // println!("Deployed Counter to address: {}", counter.address());
     Ok(())
 }
