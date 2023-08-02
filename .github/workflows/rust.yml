@@ -1,0 +1,39 @@
+name: arbiter
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository with binary
+        uses: actions/checkout@v2
+        with:
+          repository: 'primitivefinance/arbiter'
+          path: './arbiter'
+          
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      
+      - name: Build binary
+        run: |
+          cd arbiter
+          cargo install --path .
+          cd ..
+          
+      - name: Generate Bindings
+        run: arbiter bind
+      
+      - name: Build project
+        run: cargo build
