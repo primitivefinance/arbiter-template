@@ -60,6 +60,10 @@ jobs:
           cargo install --path .
           cd ..
           
+      - name: List Files
+        run: ls -la
+        working-directory: .
+          
       - name: Generate Bindings
         run: arbiter bind
         working-directory: .
