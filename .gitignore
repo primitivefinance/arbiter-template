@@ -14,7 +14,5 @@ docs/
 # Dotenv file
 .env
 src/bindings
-Cargo.lock
-Cargo.lock
 *.lock
-Cargo.lock
+

@@ -18,7 +18,7 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     // Create a new simulation manager
     let mut manager = SimulationManager::new();
     // Add a new environment
-    manager.add_environment(TEST_ENV_LABEL.clone().to_string())?;
+    manager.add_environment(TEST_ENV_LABEL.clone().to_string(), 1.0, 1)?;
     manager.run_environment(TEST_ENV_LABEL.clone().to_string())?;
     // Add a new agent to the environment
     // manager.add_agent(TEST_AGENT_NAME.to_string(), TEST_ENV_LABEL.clone().to_string())?;
