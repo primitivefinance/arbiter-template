@@ -17,3 +17,4 @@ src/bindings
 Cargo.lock
 Cargo.lock
 *.lock
+Cargo.lock
