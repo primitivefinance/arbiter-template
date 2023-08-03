@@ -5,7 +5,7 @@ use arbiter_core::{manager::SimulationManager, agent::{Agent}};
 use crate::bindings::counter::Counter;
 
 mod bindings;
-mod behaviors;
+
 
 const TEST_ENV_LABEL: &str = "test";
 const TEST_AGENT_NAME: &str = "bob";
