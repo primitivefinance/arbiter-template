@@ -38,8 +38,6 @@ jobs:
           forge test -vvv
         id: test
 
-        name: arbiter
-
   build:
     runs-on: ubuntu-latest
 
