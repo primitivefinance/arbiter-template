@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: 'primitivefinance/arbiter'
-          path: './arbiter'
+          path: '../arbiter'
           
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
@@ -53,9 +53,8 @@ jobs:
       
       - name: Build binary
         run: |
-          cd arbiter
+          cd ../arbiter
           cargo install --path .
-          cd ..
           
       - name: Generate Bindings
         run: arbiter bind
