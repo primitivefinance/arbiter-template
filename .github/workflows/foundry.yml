@@ -50,8 +50,8 @@ jobs:
       - name: Checkout external repository
         uses: actions/checkout@v2
         with:
-          repository: 'external-org/external-repo'
-          path: 'external-repo'
+          repository: 'primitivefinance/arbiter'
+          path: 'arbiter'
           
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
