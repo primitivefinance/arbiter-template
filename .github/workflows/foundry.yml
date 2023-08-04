@@ -61,7 +61,7 @@ jobs:
           
       - name: Build and install binary from external repository
         run: |
-          cd external-repo
+          cd arbiter
           cargo install --path .
           cd ..
           
