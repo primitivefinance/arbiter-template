@@ -42,32 +42,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository with binary
+      - name: Checkout current repository
         uses: actions/checkout@v2
         with:
-          repository: 'primitivefinance/arbiter'
-          path: '../arbiter'
+          path: 'current-repo'
+          
+      - name: Checkout external repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'external-org/external-repo'
+          path: 'external-repo'
           
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
-      
-      - name: Build binary
+          
+      - name: Build and install binary from external repository
         run: |
-          cd ../arbiter
+          cd external-repo
           cargo install --path .
+          cd ..
           
-      - name: List Files
-        run: ls -la
-        working-directory: .
-          
-      - name: Generate Bindings
-        run: arbiter bind
-        working-directory: .
-      
-      - name: Build project
-        run: cargo build
-        working-directory: .
+      - name: Run binary in root of current repository
+        run: |
+          cd current-repo
+          arbiter bind
 
