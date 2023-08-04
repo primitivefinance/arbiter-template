@@ -1,17 +1,15 @@
 
 use std::{error::Error};
-use arbiter_core::{manager::SimulationManager, agent::{Agent}};
+use arbiter_core::{manager::SimulationManager, agent::Agent};
 
 use crate::bindings::counter::Counter;
 
+mod strategies; 
 mod bindings;
 
 
 const TEST_ENV_LABEL: &str = "test";
 const TEST_AGENT_NAME: &str = "bob";
-const TEST_ARG_NAME: &str = "test_arg";
-const TEST_ARG_SYMBOL: &str = "TEST";
-const TEST_ARG_DECIMALS: u8 = 18;
 
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn Error>> {
@@ -32,9 +30,19 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
 
     let counter = Counter::deploy(bob.client.clone(), ())?.send().await?;
 
+
+    let deploy_strategy = strategies::DeployStrategy::new(TEST_ENV_LABEL.clone().to_string(), bob.client.clone());
+
+    manager.add_strategy_to_environment(TEST_ENV_LABEL.clone().to_string(), Box::new(deploy_strategy))?;
+    
+
     println!("Deployed Counter to address: {}", counter.address());
 
     manager.environments.get_mut(&TEST_ENV_LABEL.clone().to_string()).unwrap();
+
+
+
+
 
     // TODO Need to create a new agent and add it to the environment
     // maybe something like this: 
