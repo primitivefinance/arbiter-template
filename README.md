@@ -14,6 +14,7 @@ cd arbiter-template
 ```
 curl -L https://foundry.paradigm.xyz | bash
 foundryup
+forge install
 ```
 3. Generate bindings
 
