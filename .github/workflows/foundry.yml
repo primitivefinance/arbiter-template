@@ -1,72 +1,29 @@
-name: foundry
-
+name: CI
 on:
-  workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches:
+      - master
   pull_request:
-    branches: [ "main" ]
 
 env:
   FOUNDRY_PROFILE: ci
 
 jobs:
-  check:
-    strategy:
-      fail-fast: true
-
-    name: Foundry project
+  run-ci:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
+      - uses: actions/checkout@v2
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
 
-      - name: Run Forge build
-        run: |
-          forge --version
-          forge build --sizes
-        id: build
+      - name: Install deps
+        run: forge install
 
-      - name: Run Forge tests
-        run: |
-          forge test -vvv
-        id: test
+      - name: Build
+        run: forge build
 
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout current repository
-        uses: actions/checkout@v2
-        with:
-          path: 'current-repo'
-          
-      - name: Checkout external repository
-        uses: actions/checkout@v2
-        with:
-          repository: 'primitivefinance/arbiter'
-          path: 'arbiter'
-          
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-          
-      - name: Build and install binary from external repository
-        run: |
-          cd arbiter
-          cargo install --path .
-          cd ..
-          
-      - name: Run binary in root of current repository
-        run: |
-          cd current-repo
-          arbiter bind
-
+      - name: Run tests
+        run: forge test

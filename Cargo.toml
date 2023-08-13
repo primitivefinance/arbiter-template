@@ -1,12 +1,9 @@
 [package]
-name = "example_sim"
+name = "arbiter_template"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-arbiter-core = { git = "https://github.com/primitivefinance/arbiter", branch = "waylon/agents" }
-artemis-core = { git = "https://github.com/paradigmxyz/artemis" }
+arbiter-core = { git = "https://github.com/primitivefinance/arbiter", branch = "feat/simple" }
 tokio = { version = "1.11.0", features = ["full"] }
 ethers = { git = "https://github.com/primitivefinance/ethers-rs" }
-async-trait = "0.1.72"
-anyhow = "1.0.44"
