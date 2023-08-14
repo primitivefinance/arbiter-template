@@ -17,7 +17,10 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     let client_with_signer = Arc::new(RevmMiddleware::new(
         manager.environments.get(TEST_ENV_LABEL).unwrap(),
     ));
-    println!("created client with address {}", client_with_signer.default_sender().unwrap());
+    println!(
+        "created client with address {:?}",
+        client_with_signer.default_sender().unwrap()
+    );
     manager.start_environment(TEST_ENV_LABEL)?;
 
     let counter = Counter::deploy(client_with_signer.clone(), ())
@@ -25,7 +28,7 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
         .send()
         .await
         .unwrap();
-    println!("Counter contract deployed at {}", counter.address());
+    println!("Counter contract deployed at {:?}", counter.address());
 
     for index in 0..10 {
         counter.increment().call().await.unwrap();

@@ -1,4 +1,5 @@
 # arbiter-template
+
 Minimal template for simulating contracts with arbiter. 
 
 ## Usage
@@ -10,19 +11,26 @@ git clone https://github.com/primitivefinance/arbiter-template.git
 cd arbiter-template
 ```
 
-2. Install foundry and forge
+2. Install foundry
+
 ```
 curl -L https://foundry.paradigm.xyz | bash
 foundryup
+```
+
+3. Install forge libraries
+
+```
 forge install
 ```
-3. Generate bindings
+
+4. Generate bindings
 
 ```
 forge bind --revert-strings debug -b src/bindings/ --module --overwrite
 ```
 
-4. Run the project
+5. Run the project
 
 ```
 cargo run
