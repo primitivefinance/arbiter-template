@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-arbiter-core = { git = "https://github.com/primitivefinance/arbiter", branch = "feat/simple" }
+arbiter-core = { git = "https://github.com/primitivefinance/arbiter", branch = "feat/middleware" }
 tokio = { version = "1.11.0", features = ["full"] }
 ethers = { git = "https://github.com/primitivefinance/ethers-rs" }

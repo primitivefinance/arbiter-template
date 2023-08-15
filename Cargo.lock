@@ -116,7 +116,7 @@ dependencies = [
 [[package]]
 name = "arbiter-core"
 version = "0.3.0"
-source = "git+https://github.com/primitivefinance/arbiter?branch=feat/simple#acddf3ce2166cb9945d7748d1d33f2f546d273f7"
+source = "git+https://github.com/primitivefinance/arbiter?branch=feat/middleware#395a3cbb0f93db76dfbf1e0fd0cb58e7f2f315ba"
 dependencies = [
  "RustQuant",
  "async-trait",
