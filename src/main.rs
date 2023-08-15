@@ -15,7 +15,7 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     let _ = manager.add_environment(TEST_ENV_LABEL, 1.0, 1);
 
     let client_with_signer = Arc::new(RevmMiddleware::new(
-        manager.environments.get(TEST_ENV_LABEL).unwrap(),
+        manager.environments.get(TEST_ENV_LABEL).unwrap(), None,
     ));
     println!(
         "created client with address {:?}",
