@@ -15,7 +15,8 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     let _ = manager.add_environment(TEST_ENV_LABEL, 1.0, 1);
 
     let client_with_signer = Arc::new(RevmMiddleware::new(
-        manager.environments.get(TEST_ENV_LABEL).unwrap(), None,
+        manager.environments.get(TEST_ENV_LABEL).unwrap(),
+        None,
     ));
     println!(
         "created client with address {:?}",
@@ -30,10 +31,21 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
         .unwrap();
     println!("Counter contract deployed at {:?}", counter.address());
 
+
     for index in 0..10 {
-        counter.increment().call().await.unwrap();
-        println!("Counter incremented to {}", index);
+        let _ = counter
+            .increment()
+            .send()
+            .await
+            .unwrap()
+            .await
+            .unwrap()
+            .unwrap();
+        println!("Counter incremented to {}", index + 1);
     }
+    // post state mutation call to show that the state has changed with send
+    let count = counter.number().call().await.unwrap();
+    println!("Counter count is {}", count);
 
     Ok(())
 }
