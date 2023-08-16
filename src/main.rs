@@ -24,27 +24,17 @@ pub async fn main() -> Result<(), Box<dyn Error>> {
     );
     manager.start_environment(TEST_ENV_LABEL)?;
 
-    let counter = Counter::deploy(client_with_signer.clone(), ())
-        .unwrap()
+    let counter = Counter::deploy(client_with_signer.clone(), ())?
         .send()
-        .await
-        .unwrap();
+        .await?;
     println!("Counter contract deployed at {:?}", counter.address());
 
-
     for index in 0..10 {
-        let _ = counter
-            .increment()
-            .send()
-            .await
-            .unwrap()
-            .await
-            .unwrap()
-            .unwrap();
+        let _ = counter.increment().send().await?.await?;
         println!("Counter incremented to {}", index + 1);
     }
     // post state mutation call to show that the state has changed with send
-    let count = counter.number().call().await.unwrap();
+    let count = counter.number().call().await?;
     println!("Counter count is {}", count);
 
     Ok(())
