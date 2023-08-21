@@ -1,5 +1,6 @@
-use arbiter_core::manager::Manager;
-use arbiter_core::middleware::RevmMiddleware;
+use arbiter_core::{
+    environment::EnvironmentParameters, manager::Manager, middleware::RevmMiddleware,
+};
 use ethers::providers::Middleware;
 use std::{error::Error, sync::Arc};
 
@@ -12,7 +13,14 @@ const TEST_ENV_LABEL: &str = "test";
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn Error>> {
     let mut manager = Manager::new();
-    let _ = manager.add_environment(TEST_ENV_LABEL, 1.0, 1);
+
+    let _ = manager.add_environment(
+        TEST_ENV_LABEL,
+        EnvironmentParameters {
+            block_rate: 1.0,
+            seed: 1,
+        },
+    );
 
     let client_with_signer = Arc::new(RevmMiddleware::new(
         manager.environments.get(TEST_ENV_LABEL).unwrap(),
