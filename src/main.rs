@@ -1,7 +1,8 @@
 use arbiter_core::{
-    environment::EnvironmentParameters, manager::Manager, middleware::RevmMiddleware,
+    environment::{BlockSettings, EnvironmentParameters, GasSettings},
+    manager::Manager,
+    middleware::RevmMiddleware,
 };
-use ethers::providers::Middleware;
 use std::{error::Error, sync::Arc};
 
 use crate::bindings::counter::Counter;
@@ -13,24 +14,20 @@ const TEST_ENV_LABEL: &str = "test";
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn Error>> {
     let mut manager = Manager::new();
+    let _ = manager.add_environment(EnvironmentParameters {
+        label: TEST_ENV_LABEL.to_owned(),
+        block_settings: BlockSettings::UserControlled,
+        gas_settings: GasSettings::UserControlled,
+    });
+    manager.start_environment(TEST_ENV_LABEL)?;
 
-    let _ = manager.add_environment(
-        TEST_ENV_LABEL,
-        EnvironmentParameters {
-            block_rate: 1.0,
-            seed: 1,
-        },
+    let client_with_signer = Arc::new(
+        RevmMiddleware::new(manager.environments.get(TEST_ENV_LABEL).unwrap(), None).unwrap(),
     );
-
-    let client_with_signer = Arc::new(RevmMiddleware::new(
-        manager.environments.get(TEST_ENV_LABEL).unwrap(),
-        None,
-    ));
     println!(
         "created client with address {:?}",
-        client_with_signer.default_sender().unwrap()
+        client_with_signer.address()
     );
-    manager.start_environment(TEST_ENV_LABEL)?;
 
     let counter = Counter::deploy(client_with_signer.clone(), ())?
         .send()
