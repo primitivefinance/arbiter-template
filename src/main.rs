@@ -1,9 +1,5 @@
-use arbiter_core::{
-    environment::{BlockSettings, EnvironmentParameters, GasSettings},
-    manager::Manager,
-    middleware::RevmMiddleware,
-};
-use std::{error::Error, sync::Arc};
+use arbiter_core::{environment::builder::EnvironmentBuilder, middleware::RevmMiddleware};
+use std::error::Error;
 
 use crate::bindings::counter::Counter;
 
@@ -13,17 +9,10 @@ const TEST_ENV_LABEL: &str = "test";
 
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn Error>> {
-    let mut manager = Manager::new();
-    let _ = manager.add_environment(EnvironmentParameters {
-        label: TEST_ENV_LABEL.to_owned(),
-        block_settings: BlockSettings::UserControlled,
-        gas_settings: GasSettings::UserControlled,
-    });
-    manager.start_environment(TEST_ENV_LABEL)?;
+    let environment = EnvironmentBuilder::new().label(TEST_ENV_LABEL).build();
 
-    let client_with_signer = Arc::new(
-        RevmMiddleware::new(manager.environments.get(TEST_ENV_LABEL).unwrap(), None).unwrap(),
-    );
+    let client_with_signer = RevmMiddleware::new(&environment, None)?;
+
     println!(
         "created client with address {:?}",
         client_with_signer.address()
