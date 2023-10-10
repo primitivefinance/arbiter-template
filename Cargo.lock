@@ -154,8 +154,9 @@ dependencies = [
 
 [[package]]
 name = "arbiter-core"
-version = "0.5.3"
-source = "git+https://github.com/primitivefinance/arbiter.git?branch=arbiter/version#1ee29f9b868eee2ef4d6902da475a02780223d1a"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae66511cb99ade27f78f0a6a85f85278f99b774398f9b9e0a94bfd7a846c85bb"
 dependencies = [
  "RustQuant",
  "async-trait",
