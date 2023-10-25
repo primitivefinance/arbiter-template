@@ -1,10 +1,12 @@
+use std::str::FromStr;
+
 use anyhow::{Ok, Result};
 use arbiter_core::{
     bindings::weth,
     environment::{builder::EnvironmentBuilder, fork::Fork},
     middleware::RevmMiddleware,
 };
-use ethers::{providers::Middleware, types::U256};
+use ethers::{providers::Middleware, types::Address};
 
 use crate::bindings::counter::Counter;
 
@@ -15,11 +17,14 @@ const FORK_PATH: &str = "fork_example/test.json";
 
 #[tokio::main]
 pub async fn main() -> Result<()> {
+    // these are examples you can run
     counter_example().await?;
-    load_fork_from_disk().await?;
+    // load_eoa_from_disk().await?;
+    // load_contract_from_fork().await?;
     Ok(())
 }
 
+// This is an example of deploying a contract and then mutating its state
 pub async fn counter_example() -> Result<()> {
     let environment = EnvironmentBuilder::new().build();
 
@@ -45,53 +50,55 @@ pub async fn counter_example() -> Result<()> {
     Ok(())
 }
 
-pub async fn load_fork_from_disk() -> Result<()> {
+// This is an example of loading an eoa from disk and then using it to deploy a contract
+// Note: you need to have forked state written to disk with arbiter fork command
+pub async fn load_eoa_from_disk() -> Result<()> {
     let fork = Fork::from_disk(FORK_PATH).unwrap();
 
     // Get the environment going
     let environment = EnvironmentBuilder::new().db(fork.db).build();
 
+    // grab vitaliks address and create a client with it
     let vitalik_address = fork.eoa.get("vitalik").unwrap();
-    let vitalik_as_a_client = RevmMiddleware::new_from_forked_eoa(&environment, *vitalik_address);
-    assert!(vitalik_as_a_client.is_ok());
-    let vitalik_as_a_client = vitalik_as_a_client.unwrap();
+    let vitalik_as_a_client = RevmMiddleware::new_from_forked_eoa(&environment, *vitalik_address)?;
 
     // test a state mutating call from the forked eoa
     let weth = weth::WETH::deploy(vitalik_as_a_client.clone(), ())
         .unwrap()
         .send()
-        .await;
-    assert!(weth.is_ok()); // vitalik deployed the weth contract
+        .await?;
+    println!("vitalik deployed the weth contract as {:?}", weth.address());
 
     // test a non mutating call from the forked eoa
     let eth_balance = vitalik_as_a_client
         .get_balance(*vitalik_address, None)
         .await
         .unwrap();
-    assert_eq!(eth_balance, U256::from(934034962177715175765_u128));
+    println!("vitalik has {} eth", eth_balance);
     Ok(())
 }
 
-// Create a client
-// let client = RevmMiddleware::new(&environment, Some("name")).unwrap();
+// This is an example of loading a contract from disk with it's state
+// Note: you need to have forked state written to disk with arbiter fork command
+pub async fn load_contract_from_fork() -> Result<()> {
+    // Create fork from
+    let fork = Fork::from_disk(FORK_PATH)?;
 
-// // Deal with the weth contract
-// let weth_meta = fork.contracts_meta.get("weth").unwrap();
-// let weth = weth::WETH::new(weth_meta.address, client.clone());
+    // Get the environment going
+    let environment = EnvironmentBuilder::new().db(fork.db).build();
 
-// let address_to_check_balance =
-//     Address::from_str(&weth_meta.mappings.get("balanceOf").unwrap()[0]).unwrap();
+    // Create a client
+    let client = RevmMiddleware::new(&environment, Some("name"))?;
 
-// println!("checking address: {}", address_to_check_balance);
-// let balance = weth
-//     .balance_of(address_to_check_balance)
-//     .call()
-//     .await
-//     .unwrap();
-// assert_eq!(balance, U256::from(34890707020710109111_u128));
+    // Deal with the weth contract
+    let weth_meta = fork.contracts_meta.get("weth").unwrap();
+    let weth = weth::WETH::new(weth_meta.address, client.clone());
 
-// // eoa check
-// let eoa = fork.eoa.get("vitalik").unwrap();
-// let eth_balance = client.get_balance(*eoa, None).await.unwrap();
-// // Check the balance of the eoa with the load cheatcode
-// assert_eq!(eth_balance, U256::from(934034962177715175765_u128));
+    let address_to_check_balance =
+        Address::from_str(&weth_meta.mappings.get("balanceOf").unwrap()[0])?;
+
+    println!("checking address: {}", address_to_check_balance);
+    let balance = weth.balance_of(address_to_check_balance).call().await?;
+    println!("balance is {}", balance);
+    Ok(())
+}
