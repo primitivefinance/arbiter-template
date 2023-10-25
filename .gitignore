@@ -13,6 +13,5 @@ docs/
 
 # Dotenv file
 .env
-src/bindings
 *.lock
 
