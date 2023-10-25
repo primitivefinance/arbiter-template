@@ -4,8 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-arbiter-core = { version = "0.6.3" }
+arbiter-core = { version = "0.6.3", features = ["contracts"] }
 tokio = { version = "1.33.0", features = ["full"] }
 ethers = { version = "2.0.10" }
 serde_json = { version = "1.0.107" }
 serde = { version = "1.0.189", features = ["derive"] }
+anyhow = { version = "1.0.75" }
