@@ -2,3 +2,7 @@
 libs = ["lib"]
 out = "out"
 src = "contracts"
+
+[arbiter]
+bindings_workspace = "simulation" # must be a valid workspace member
+submodules = true       
