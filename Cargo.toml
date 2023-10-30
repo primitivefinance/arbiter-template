@@ -1,5 +1,5 @@
 [package]
-name = "arbiter_template"
+name = "UniswapV2"
 version = "0.1.0"
 edition = "2021"
 
