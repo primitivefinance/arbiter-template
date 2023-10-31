@@ -1,29 +1,12 @@
 [package]
-name = "arbiter_examples"
+name = "UniswapV2"
 version = "0.1.0"
 edition = "2021"
 
-
-[workspace]
-members = ["simulation"]
-
-[[bin]]
-name = "arbiter_examples"
-path = "src/main.rs"
-
 [dependencies]
-simulation = { path = "simulation" }
-arbiter-core = { version = "0.7.0", features = ["contracts"] }
+arbiter-core = { version = "0.6.3", features = ["contracts"] }
 tokio = { version = "1.33.0", features = ["full"] }
 ethers = { version = "2.0.10" }
 serde_json = { version = "1.0.107" }
 serde = { version = "1.0.189", features = ["derive"] }
 anyhow = { version = "1.0.75" }
-futures-util = { version = "0.3.29" }
-clap = { version = "4.4.6", features = ["derive"] }
-tracing-subscriber = "0.3.17"
-
-
-[arbiter]
-bindings_workspace = "simulation" # must be a valid workspace member
-submodules = true       
