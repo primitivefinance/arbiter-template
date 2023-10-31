@@ -1,6 +1,4 @@
 use super::*;
-
-use v2_core_bindings::uniswap_v2_factory::UniswapV2Factory;
 const FORK_PATH: &str = "../../fork_example/test.json";
 
 // This is an example of deploying a contract and then mutating its state
@@ -79,24 +77,5 @@ pub async fn load_contract_from_fork() -> Result<()> {
     println!("checking address: {}", address_to_check_balance);
     let balance = weth.balance_of(address_to_check_balance).call().await?;
     println!("balance is {}", balance);
-    Ok(())
-}
-
-
-pub async fn uniswap_example() -> Result<()> {
-    let environment = EnvironmentBuilder::new().build();
-
-    let client_with_signer = RevmMiddleware::new(&environment, None)?;
-
-    println!(
-        "created client with address {:?}",
-        client_with_signer.address()
-    );
-
-    let uniswap_factory = UniswapV2Factory::deploy(client_with_signer.clone(), client_with_signer.address())?
-        .send()
-        .await?;
-    println!("UniswapFactory contract deployed at {:?}", uniswap_factory.address());
-
     Ok(())
 }
