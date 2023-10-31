@@ -1,5 +1,23 @@
+use std::{str::FromStr, time::Instant};
+
 use anyhow::{Ok, Result};
+use arbiter_core::{
+    bindings::weth,
+    environment::{builder::EnvironmentBuilder, fork::Fork},
+    middleware::RevmMiddleware,
+};
+use ethers::{providers::Middleware, types::Address};
+
+use crate::bindings::counter::Counter;
+
+#[allow(unused_imports)]
+mod bindings;
+
+
 use clap::{ArgAction, CommandFactory, Parser, Subcommand};
+use simulation::simulation::counter_example;
+
+
 
 #[derive(Parser)]
 #[clap(name = "arbiter_examplse")]
