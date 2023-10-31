@@ -35,18 +35,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "UniswapV2"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "arbiter-core",
- "ethers",
- "serde",
- "serde_json",
- "tokio",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -195,6 +183,18 @@ dependencies = [
  "thiserror",
  "tokio",
  "tracing",
+]
+
+[[package]]
+name = "arbiter_template"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arbiter-core",
+ "ethers",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]

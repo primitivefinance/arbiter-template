@@ -4,3 +4,5 @@
 //! Do not manually edit these files.
 //! These files may be overwritten by the codegen system at any time.
 pub mod counter;
+pub mod std_invariant;
+pub mod std_style;
