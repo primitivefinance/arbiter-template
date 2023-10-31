@@ -1,6 +1,6 @@
 #[allow(non_snake_case)]
 pub mod bindings;
-pub mod simulation;
+pub mod simulations;
 pub mod v2_core_bindings;
 use anyhow::{Ok, Result};
 use arbiter_core::{
