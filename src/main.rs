@@ -1,104 +1,52 @@
-use std::str::FromStr;
+use std::time::Instant;
 
-use anyhow::{Ok, Result};
-use arbiter_core::{
-    bindings::weth,
-    environment::{builder::EnvironmentBuilder, fork::Fork},
-    middleware::RevmMiddleware,
-};
-use ethers::{providers::Middleware, types::Address};
+use anyhow::Result;
+use clap::{ArgAction, CommandFactory, Parser, Subcommand};
 
-use crate::bindings::counter::Counter;
+pub mod simulations;
+pub mod settings;
+pub mod agents;
+pub mod bindings;
 
-#[allow(unused_imports)]
-mod bindings;
+/// Represents command-line arguments passed to the `Arbiter` tool.
+#[derive(Parser)]
+#[clap(name = "Excalibur")]
+#[clap(version = env!("CARGO_PKG_VERSION"))]
+#[clap(about = "Simulation driven development.", long_about = None)]
+#[clap(author)]
+struct Args {
+    /// Defines the subcommand to execute.
+    #[command(subcommand)]
+    command: Option<Commands>,
 
-const FORK_PATH: &str = "fork_example/test.json";
-
-#[tokio::main]
-pub async fn main() -> Result<()> {
-    // these are examples you can run
-    counter_example().await?;
-    // load_eoa_from_disk().await?;
-    // load_contract_from_fork().await?;
-    Ok(())
+    #[clap(short, long, global = true, required = false, action = ArgAction::Count, value_parser(
+        clap::value_parser!(u8)))]
+    verbose: Option<u8>,
 }
 
-// This is an example of deploying a contract and then mutating its state
-pub async fn counter_example() -> Result<()> {
-    let environment = EnvironmentBuilder::new().build();
+/// Defines available subcommands for the `Arbiter` tool.
+#[derive(Subcommand)]
+enum Commands {
+    /// Represents the `Bind` subcommand.
+    Simulate {
+        #[clap(index = 1, default_value = "src/config/gbm.toml")]
+        config_path: String,
+    },
+}
 
-    let client_with_signer = RevmMiddleware::new(&environment, None)?;
+fn main() -> Result<()> {
+    let args = Args::parse();
 
-    println!(
-        "created client with address {:?}",
-        client_with_signer.address()
-    );
-
-    let counter = Counter::deploy(client_with_signer.clone(), ())?
-        .send()
-        .await?;
-    println!("Counter contract deployed at {:?}", counter.address());
-
-    for index in 0..10 {
-        let _ = counter.increment().send().await?.await?;
-        println!("Counter incremented to {}", index + 1);
+    match &args.command {
+        Some(Commands::Simulate { config_path }) => {
+            println!("Reading from config path: {}", config_path);
+            let start = Instant::now();
+            simulations::batch(config_path)?;
+            let duration = start.elapsed();
+            println!("Total duration of simulations: {:?}", duration);
+        }
+        None => Args::command().print_long_help()?,
     }
-    // post state mutation call to show that the state has changed with send
-    let count = counter.number().call().await?;
-    println!("Counter count is {}", count);
     Ok(())
 }
 
-// This is an example of loading an eoa from disk and then using it to deploy a contract
-// Note: you need to have forked state written to disk with arbiter fork command
-pub async fn load_eoa_from_disk() -> Result<()> {
-    let fork = Fork::from_disk(FORK_PATH).unwrap();
-
-    // Get the environment going
-    let environment = EnvironmentBuilder::new().db(fork.db).build();
-
-    // grab vitaliks address and create a client with it
-    let vitalik_address = fork.eoa.get("vitalik").unwrap();
-    let vitalik_as_a_client = RevmMiddleware::new_from_forked_eoa(&environment, *vitalik_address)?;
-
-    // test a state mutating call from the forked eoa
-    let weth = weth::WETH::deploy(vitalik_as_a_client.clone(), ())
-        .unwrap()
-        .send()
-        .await?;
-    println!("vitalik deployed the weth contract as {:?}", weth.address());
-
-    // test a non mutating call from the forked eoa
-    let eth_balance = vitalik_as_a_client
-        .get_balance(*vitalik_address, None)
-        .await
-        .unwrap();
-    println!("vitalik has {} eth", eth_balance);
-    Ok(())
-}
-
-// This is an example of loading a contract from disk with it's state
-// Note: you need to have forked state written to disk with arbiter fork command
-pub async fn load_contract_from_fork() -> Result<()> {
-    // Create fork from
-    let fork = Fork::from_disk(FORK_PATH)?;
-
-    // Get the environment going
-    let environment = EnvironmentBuilder::new().db(fork.db).build();
-
-    // Create a client
-    let client = RevmMiddleware::new(&environment, Some("name"))?;
-
-    // Deal with the weth contract
-    let weth_meta = fork.contracts_meta.get("weth").unwrap();
-    let weth = weth::WETH::new(weth_meta.address, client.clone());
-
-    let address_to_check_balance =
-        Address::from_str(&weth_meta.mappings.get("balanceOf").unwrap()[0])?;
-
-    println!("checking address: {}", address_to_check_balance);
-    let balance = weth.balance_of(address_to_check_balance).call().await?;
-    println!("balance is {}", balance);
-    Ok(())
-}
