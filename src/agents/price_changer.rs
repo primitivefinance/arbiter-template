@@ -1,18 +1,18 @@
-use arbiter_core::math::{float_to_wad, Trajectories, GeometricBrownianMotion, StochasticProcess};
+use crate::agents::*;
+use crate::settings::{parameters::GBMParameters, SimulationConfig};
 use arbiter_core::bindings::liquid_exchange::LiquidExchange;
 use arbiter_core::environment::Environment;
+use arbiter_core::math::{float_to_wad, GeometricBrownianMotion, StochasticProcess, Trajectories};
 use arbiter_core::middleware::RevmMiddleware;
 use ethers::utils::parse_ether;
-use crate::settings::{SimulationConfig, parameters::GBMParameters};
-use crate::agents::*;
 
-/// The `PriceChanger` holds the data and has methods that allow it to update
-/// the price of the `LiquidExchange`.
+/// The [`PriceChanger`] holds the data and has methods that allow it to update
+/// the price of the [`LiquidExchange`].
 pub struct PriceChanger {
     /// The path the price process takes.
     pub trajectory: Trajectories,
 
-    /// The `LiquidExchange` contract with the admin `Client`.
+    /// The [`LiquidExchange`] contract with the admin `Client`.
     pub liquid_exchange: LiquidExchange<RevmMiddleware>,
 
     /// The index of the current price in the trajectory.
@@ -20,8 +20,8 @@ pub struct PriceChanger {
 }
 
 impl PriceChanger {
-    /// Create a new `PriceChanger` with the given `LiquidExchange` contract
-    /// bound to the admin `Client`. The `PriceChanger` will use the
+    /// Create a new [`PriceChanger`] with the given [`LiquidExchange`] contract
+    /// bound to the admin `Client`. The [`PriceChanger`] will use the
     /// `OrnsteinUhlenbeck` process to generate a price trajectory with the
     /// constants defined in `config.rs`.
     /// Ornstein-Uhlenbeck processes are useful for modeling the price of stable
@@ -76,7 +76,7 @@ impl PriceChanger {
         })
     }
 
-    /// Update the price of the `LiquidExchange` contract to the next price in
+    /// Update the price of the [`LiquidExchange`] contract to the next price in
     /// the trajectory and increment the index.
     pub async fn update_price(&mut self) -> Result<()> {
         let price = self.trajectory.paths[0][self.index];

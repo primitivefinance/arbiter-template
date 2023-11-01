@@ -1,38 +1,54 @@
+/// Arbiter Simulation module for handling different types of simulations.
+///
+/// This module provides structs and functions for executing and managing
+/// various types of simulations, including counter simulations and price path simulations.
 use arbiter_core::environment::Environment;
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::sync::Semaphore;
-use serde::{Serialize, Deserialize};
 
 use super::*;
-use crate::{
-    agents::{Agent, Agents},
-    settings::parameters::Fixed,
-};
+use crate::{agents::Agents, settings::parameters::Fixed};
 
-pub mod price_path_simulation;
 pub mod counter;
+pub mod price_path_simulation;
 
-use settings::parameters::Parameterized;
-use tokio::runtime::Builder;
 use crate::settings::SimulationConfig;
 use anyhow::Result;
+use settings::parameters::Parameterized;
+use tokio::runtime::Builder;
 
+/// Represents the main Simulation structure.
+///
+/// This struct encapsulates agents, steps, and the environment needed
+/// for a simulation.
 pub struct Simulation {
     pub agents: Agents,
     pub steps: usize,
     environment: Environment,
 }
 
+/// Defines the types of simulations available.
+///
+/// The `SimulationType` enum provides an easy way to specify and differentiate
+/// between different types of simulations, such as `SimulatedPricePath` and `Counter`.
+/// If you wanted to add a simulation you would add it here to this enum
 #[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub enum SimulationType {
     SimulatedPricePath,
-    Counter
+    Counter,
 }
 
 impl SimulationType {
+    /// Asynchronously runs the specified simulation type based on the provided configuration.
+    ///
+    /// This function matches on the `SimulationType` to determine which simulation setup to use,
+    /// then executes the chosen simulation.
     async fn run(config: SimulationConfig<Fixed>) -> Result<()> {
         let simulation = match config.simulation {
-            SimulationType::SimulatedPricePath => price_path_simulation::setup(config.clone()).await?,
+            SimulationType::SimulatedPricePath => {
+                price_path_simulation::setup(config.clone()).await?
+            }
             SimulationType::Counter => counter::setup(config.clone()).await?,
         };
         match looper(simulation.agents, simulation.steps).await {
@@ -41,12 +57,6 @@ impl SimulationType {
                 Ok(())
             }
             Err(e) => {
-                let metadata = format!(
-                    "{}_{}",
-                    config.output_directory,
-                    config.output_file_name.unwrap()
-                );
-                let error_string = format!("Error in simulation `{:?}`: {:?}", metadata, e);
                 simulation.environment.stop()?;
                 Err(e)
             }
@@ -54,8 +64,12 @@ impl SimulationType {
     }
 }
 
-
+/// Executes a batch of simulations based on the provided configuration path.
+///
+/// This function sets up multiple simulations to run in parallel, manages available resources using a semaphore,
+/// and handles any errors that arise during execution.
 pub fn batch(config_path: &str) -> Result<()> {
+    //
     let config = SimulationConfig::new(config_path)?;
 
     let direct_configs: Vec<SimulationConfig<Fixed>> = config.generate();
@@ -108,8 +122,11 @@ pub fn batch(config_path: &str) -> Result<()> {
     })
 }
 
+/// Asynchronously loops through agents and performs the steps for each agent.
+///
+/// This function starts each agent, then performs priority steps and regular steps
+/// for a given number of iterations.
 pub async fn looper(mut agents: Agents, steps: usize) -> Result<()> {
-
     for agent in agents.iter_mut() {
         agent.startup().await?;
     }

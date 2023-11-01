@@ -1,37 +1,34 @@
-# arbiter-template
+# Arbiter Template
 
-Minimal template for simulating contracts with arbiter. 
+Minimal template for simulating contracts with arbiter. This template is used by the `arbiter init` command when starting new simulations. This template provides a framework for performantly simulating Agent Based Models (ABM) with evm parity. In this model you can think of any things that happens as an action of an agent. Agents can own keys and externally owned accounts, they can interact with each other and they can interact with contracts. This repository has some example agents including a `TokenAdmin`, `BlockAdmin`, and `CounterAgent` which their own functionality and responsibilities. We also give an example of how to parametarize your simulations with a configuration file containing different price paths and price path parameters. These can be played with to see how the simulation changes. Furthermore we provide an api to batch simulations and run them in parallel. This is useful for running many simulations with different parameters.
+
+### Prerequisites
+
+- Rust programming language and Cargo package manager (latest stable version recommended)
+- [Foundry](https://book.getfoundry.sh/getting-started/installation) is used behind the scenes to generate rust contract bindings. Make sure you have forge installed and up to date.
 
 ## Usage
+1. Install arbiter
 
-1. Clone this repository
-
-```
-git clone https://github.com/primitivefinance/arbiter-template.git
-cd arbiter-template
+``` bash
+cargo install arbiter
 ```
 
-2. Install foundry
+2. Create arbiter project from this template
 
-```
-curl -L https://foundry.paradigm.xyz | bash
-foundryup
-```
-
-3. Install forge libraries
-
-```
-forge install
+``` bash 
+arbiter init <name_of_project>
 ```
 
-4. Generate bindings
-
+3. Run the project
+```bash
+cargo run simulate src/config/counter.toml
 ```
-forge bind --revert-strings debug -b src/bindings/ --module --overwrite
-```
 
-5. Run the project
+## Documentation
 
-```
-cargo run
+The documentation for the repository is primarily inline with the code. Cargo automatically can compile these into a browsable format. To view the documentation run the following command:
+
+```bash
+cargo doc --open
 ```

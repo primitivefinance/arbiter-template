@@ -1,10 +1,19 @@
 use std::{collections::hash_map::DefaultHasher, hash::Hasher};
 
 use super::*;
+
+/// A trait defining objects that can generate a set of parameters.
+///
+/// This trait is implemented by various parameter structs that provide a method
+/// to produce a vector of parameters based on their internal state.
 pub trait Parameterized<T> {
     fn generate(&self) -> Vec<T>;
 }
 
+/// Represents a fixed parameter value.
+///
+/// This struct holds a fixed value of type `f64` that can be generated
+/// directly without any modification.
 #[derive(Copy, Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Fixed(pub f64);
 impl Parameterized<f64> for Fixed {
@@ -13,6 +22,10 @@ impl Parameterized<f64> for Fixed {
     }
 }
 
+/// Represents meta parameter configuration.
+///
+/// This struct wraps around the `LinspaceParameters` to facilitate parameter generation
+/// in a certain defined space.
 #[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct Meta(LinspaceParameters);
 impl Parameterized<f64> for Meta {
@@ -21,6 +34,10 @@ impl Parameterized<f64> for Meta {
     }
 }
 
+/// Contains the parameters for generating a linear space of values.
+///
+/// This struct can be configured to generate a sequence of evenly spaced values
+/// between a start and end point, or a single fixed value.
 #[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct LinspaceParameters {
     pub start: Option<f64>,
@@ -53,19 +70,34 @@ pub struct BlockParameters {
     pub timestep_size: u64,
 }
 
+/// Defines parameters for a trajectory in the simulation.
+///
+/// Contains information like initial price, start and end times,
+/// and number of steps and paths in the simulation.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TrajectoryParameters<P: Parameterized<f64>> {
+    /// The name.
     pub process: String,
+
     /// The initial price of the asset.
     pub initial_price: P,
+
     /// The start time of the process.
     pub t_0: P,
+
     /// The end time of the process.
     pub t_n: P,
+
     /// The number of steps in the process.
     pub num_steps: usize,
+
+    /// The number of paths in the process.
     pub num_paths: usize,
+
+    /// The seed for the process.
     pub seed: u64,
+
+    /// The tag for the output file.
     pub output_tag: Option<String>,
 }
 
@@ -101,10 +133,12 @@ impl Parameterized<TrajectoryParameters<Fixed>> for TrajectoryParameters<Meta> {
     }
 }
 
+/// Contains the parameters for the Geometric Brownian Motion (GBM) process.
 #[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct GBMParameters<P: Parameterized<f64>> {
     // The drift of the process.
     pub drift: P,
+
     // The volatility of the process.
     pub volatility: P,
 }
@@ -126,12 +160,15 @@ impl Parameterized<GBMParameters<Fixed>> for GBMParameters<Meta> {
     }
 }
 
+/// Contains the parameters for the Ornstein–Uhlenbeck (OU) process.
 #[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct OUParameters<P: Parameterized<f64>> {
     /// The mean (price) of the process.
     pub mean: P,
+
     /// The standard deviation of the process.
     pub std_dev: P,
+
     /// The theta parameter of the process.
     /// This describes how strongly the process will revert to the mean.
     pub theta: P,
