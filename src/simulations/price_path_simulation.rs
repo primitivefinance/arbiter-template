@@ -1,15 +1,29 @@
-use arbiter_core::{data_collection::EventLogger, environment::builder::{BlockSettings, EnvironmentBuilder}};
+use arbiter_core::{
+    data_collection::EventLogger,
+    environment::builder::{BlockSettings, EnvironmentBuilder},
+};
 
+use super::*;
 use crate::{
     agents::{
-        block_admin::BlockAdmin,
-        price_changer::PriceChanger, token_admin::TokenAdmin,
-        Agent, Agents,
+        block_admin::BlockAdmin, price_changer::PriceChanger, token_admin::TokenAdmin, Agents,
     },
     settings::SimulationConfig,
 };
-use super::*;
 
+/// Asynchronously sets up a `SimulatedPricePath` simulation using the provided configuration.
+///
+/// This function prepares the environment, initializes various agents including
+/// `BlockAdmin`, `TokenAdmin`, and `PriceChanger`, logs events, and then returns a `Simulation`
+/// object which houses the configured agents, steps, and the environment.
+///
+/// # Arguments
+///
+/// * `config` - The configuration for the simulation based on `SimulationConfig<Fixed>`.
+///
+/// # Returns
+///
+/// * A `Result` containing the fully initialized `Simulation` or an error if any step of the setup fails.
 pub async fn setup(config: SimulationConfig<Fixed>) -> Result<Simulation> {
     let environment = EnvironmentBuilder::new()
         .block_settings(BlockSettings::UserControlled)
@@ -26,9 +40,7 @@ pub async fn setup(config: SimulationConfig<Fixed>) -> Result<Simulation> {
         .run()?;
 
     Ok(Simulation {
-        agents: Agents::new()
-            .add(price_changer)
-            .add(block_admin),
+        agents: Agents::new().add(price_changer).add(block_admin),
         steps: config.trajectory.num_steps,
         environment,
     })

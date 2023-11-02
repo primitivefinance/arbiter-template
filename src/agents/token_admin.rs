@@ -1,18 +1,34 @@
 use std::sync::Arc;
 
-use arbiter_core::{middleware::RevmMiddleware, environment::Environment, bindings::arbiter_token::ArbiterToken};
+use arbiter_core::{
+    bindings::arbiter_token::ArbiterToken, environment::Environment, middleware::RevmMiddleware,
+};
 use ethers::types::{Address, U256};
 
 use super::*;
 
+/// Manages the administrative operations for two types of tokens within the simulation environment.
+/// The token admin is responsible for minting tokens to agents and other contracts.
 #[derive(Clone)]
 pub struct TokenAdmin {
+    /// The client interface for interacting with the [RevmMiddleware].
     pub client: Arc<RevmMiddleware>,
+
+    /// The arbiter token X contract.
     pub arbx: ArbiterToken<RevmMiddleware>,
+
+    /// The arbiter token Y contract.
     pub arby: ArbiterToken<RevmMiddleware>,
 }
 
 impl TokenAdmin {
+    /// Creates a new [`TokenAdmin`] instance, deploying two ArbiterToken contracts.
+    ///
+    /// # Arguments
+    /// * [`Environment`] - The simulation environment containing blockchain network configurations.
+    ///
+    /// # Returns
+    /// * [`Result<Self>`] - The result of the operation, yielding a new [`TokenAdmin`] if successful.
     pub async fn new(environment: &Environment) -> Result<Self> {
         let client = RevmMiddleware::new(environment, "token_admin".into())?;
         let decimals = 18_u8;
