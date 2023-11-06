@@ -219,9 +219,9 @@ dependencies = [
 
 [[package]]
 name = "arbiter-core"
-version = "0.7.1"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "abe42d117e67c5c623bc7e21c5f4cbda5ae80755e73d6fef9eff135b792b3735"
+checksum = "58e50f8c909acf825f9472756e4660b188ee53a1d9aa3f7843d8584d87e9cbfb"
 dependencies = [
  "RustQuant",
  "async-trait",
