@@ -7,8 +7,6 @@ pub mod token_admin;
 
 use std::marker::{Send, Sync};
 
-use crate::settings::parameters::Fixed;
-
 /// Universal agent methods for interacting with the simulation environment or
 /// loop.
 /// Agents are expected to be both [`Send`] and [`Sync`].

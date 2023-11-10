@@ -8,14 +8,13 @@ use std::sync::Arc;
 use tokio::sync::Semaphore;
 
 use super::*;
-use crate::{agents::Agents, settings::parameters::Fixed};
+use crate::agents::Agents;
 
 pub mod counter;
 pub mod price_path_simulation;
 
 use crate::settings::SimulationConfig;
 use anyhow::Result;
-use settings::parameters::Parameterized;
 use tokio::runtime::Builder;
 
 /// Represents the main Simulation structure.
@@ -44,7 +43,7 @@ impl SimulationType {
     ///
     /// This function matches on the `SimulationType` to determine which simulation setup to use,
     /// then executes the chosen simulation.
-    async fn run(config: SimulationConfig<Fixed>) -> Result<()> {
+    async fn run(config: SimulationConfig) -> Result<()> {
         let simulation = match config.simulation {
             SimulationType::SimulatedPricePath => {
                 price_path_simulation::setup(config.clone()).await?
@@ -68,48 +67,29 @@ impl SimulationType {
 ///
 /// This function sets up multiple simulations to run in parallel, manages available resources using a semaphore,
 /// and handles any errors that arise during execution.
-pub fn batch(config_path: &str) -> Result<()> {
-    //
-    let config = SimulationConfig::new(config_path)?;
-
-    let direct_configs: Vec<SimulationConfig<Fixed>> = config.generate();
-
+pub fn batch(config_paths: Vec<String>) -> Result<()> {
     // Create a multi-threaded runtime
     let rt = Builder::new_multi_thread().build()?;
 
-    // Create a semaphore with a given number of permits
-    let semaphore = config
-        .max_parallel
-        .map(|max_parallel| Arc::new(Semaphore::new(max_parallel)));
+    let mut configs = vec![];
+    for path in config_paths {
+        configs.push(SimulationConfig::new(path)?);
+    }
 
     rt.block_on(async {
         let mut handles = vec![];
         let errors = Arc::new(tokio::sync::Mutex::new(vec![]));
 
-        for config in direct_configs {
+        for config in configs {
             let errors_clone = errors.clone();
-            let semaphore_clone = semaphore.clone();
             handles.push(tokio::spawn(async move {
-                // Acquire a permit inside the spawned task
-                let permit = if let Some(ref semaphore_clone) = semaphore_clone {
-                    // Acquire a permit outside the spawned task
-                    let permit = semaphore_clone.acquire().await.unwrap();
-                    Some(permit)
-                } else {
-                    None
-                };
-
                 let result = SimulationType::run(config).await;
                 match result {
                     Err(e) => {
                         let mut errors_clone_lock = errors_clone.lock().await;
                         errors_clone_lock.push(e);
-                        // Drop the permit when the simulation is done.
-                        drop(permit);
                     }
-                    Result::Ok(_) => {
-                        drop(permit);
-                    }
+                    Result::Ok(_) => {}
                 }
             }));
         }

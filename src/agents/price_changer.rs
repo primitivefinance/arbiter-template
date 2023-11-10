@@ -1,5 +1,5 @@
 use crate::agents::*;
-use crate::settings::{parameters::GBMParameters, SimulationConfig};
+use crate::settings::{GBMParameters, SimulationConfig};
 use arbiter_core::bindings::liquid_exchange::LiquidExchange;
 use arbiter_core::environment::Environment;
 use arbiter_core::math::{float_to_wad, GeometricBrownianMotion, StochasticProcess, Trajectories};
@@ -29,7 +29,7 @@ impl PriceChanger {
     pub async fn new(
         environment: &Environment,
         token_admin: &token_admin::TokenAdmin,
-        config: &SimulationConfig<Fixed>,
+        config: &SimulationConfig,
     ) -> Result<Self> {
         let client = RevmMiddleware::new(environment, "price_changer".into())?;
         let liquid_exchange = LiquidExchange::deploy(
@@ -37,7 +37,7 @@ impl PriceChanger {
             (
                 token_admin.arbx.address(),
                 token_admin.arby.address(),
-                float_to_wad(config.trajectory.initial_price.0),
+                float_to_wad(config.trajectory.initial_price),
             ),
         )?
         .send()
@@ -54,11 +54,11 @@ impl PriceChanger {
         let trajectory_params = &config.trajectory;
         let trajectory = match trajectory_params.process.as_str() {
             "gbm" => {
-                let GBMParameters { drift, volatility } = config.gbm.unwrap();
-                GeometricBrownianMotion::new(drift.0, volatility.0).seedable_euler_maruyama(
-                    trajectory_params.initial_price.0,
-                    trajectory_params.t_0.0,
-                    trajectory_params.t_n.0,
+                let GBMParameters { drift, volatility } = config.gbm;
+                GeometricBrownianMotion::new(drift, volatility).seedable_euler_maruyama(
+                    trajectory_params.initial_price,
+                    trajectory_params.t_0,
+                    trajectory_params.t_n,
                     trajectory_params.num_steps,
                     1,
                     false,
