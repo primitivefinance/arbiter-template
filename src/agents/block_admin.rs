@@ -30,11 +30,11 @@ impl BlockAdmin {
     ///
     /// # Arguments
     /// * [`Environment`] - The environment containing blockchain node information.
-    /// * [`SimulationConfig<Fixed>`] - The simulation configuration providing block timestep size.
+    /// * [`SimulationConfig`] - The simulation configuration providing block timestep size.
     ///
     /// # Returns
     /// * [`Result<Self>`] - A result containing the new BlockAdmin or an error.
-    pub async fn new(environment: &Environment, config: &SimulationConfig<Fixed>) -> Result<Self> {
+    pub async fn new(environment: &Environment, config: &SimulationConfig) -> Result<Self> {
         let client = RevmMiddleware::new(environment, "block_admin".into())?;
         let timestep_size = config.block.timestep_size;
         let block_number = client.get_block_number().await?.as_u64();

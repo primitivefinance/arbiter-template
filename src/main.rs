@@ -1,4 +1,7 @@
-use std::time::Instant;
+use std::{
+    fs::{self, DirEntry},
+    time::Instant,
+};
 
 use anyhow::Result;
 use clap::{ArgAction, CommandFactory, Parser, Subcommand};
@@ -29,7 +32,7 @@ struct Args {
 enum Commands {
     /// Represents the `Bind` subcommand.
     Simulate {
-        #[clap(index = 1, default_value = "src/config/gbm.toml")]
+        #[clap(index = 1, default_value = "src/config/")]
         config_path: String,
     },
 }
@@ -47,7 +50,7 @@ enum Commands {
 /// $ cargo run simulate [path_to_config]
 /// ```
 ///
-/// By default, if no configuration path is provided, it will read from "src/config/gbm.toml".
+/// By default, if no configuration path is provided, it will read from "src/config/".
 ///
 /// These simulations are performed in Arbiter's in memory revm instance and with the exposed RevmMiddleware.
 fn main() -> Result<()> {
@@ -58,11 +61,28 @@ fn main() -> Result<()> {
             println!("Reading from config path: {}", config_path);
             let start = Instant::now();
             // This is the entry point for the simulation
-            simulations::batch(config_path)?;
+            let files = read_toml_files(config_path)?;
+            println!("files: {:?}", files);
+            simulations::batch(files)?;
             let duration = start.elapsed();
             println!("Total duration of simulations: {:?}", duration);
         }
         None => Args::command().print_long_help()?,
     }
     Ok(())
+}
+
+// Function to read .toml files from a directory and return their paths
+fn read_toml_files(dir: &str) -> Result<Vec<String>, std::io::Error> {
+    let paths = fs::read_dir(dir)?
+        .filter_map(Result::ok)
+        .filter(is_toml_file)
+        .map(|entry| entry.path().to_string_lossy().into_owned())
+        .collect();
+    Ok(paths)
+}
+
+// Helper function to check if a DirEntry is a .toml file
+fn is_toml_file(entry: &DirEntry) -> bool {
+    entry.path().extension().map_or(false, |ext| ext == "toml")
 }

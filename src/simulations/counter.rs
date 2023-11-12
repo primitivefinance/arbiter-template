@@ -16,12 +16,12 @@ use crate::{
 ///
 /// # Arguments
 ///
-/// * `config` - The configuration for the simulation based on `SimulationConfig<Fixed>`.
+/// * `config` - The configuration for the simulation based on `SimulationConfig`.
 ///
 /// # Returns
 ///
 /// * A `Result` containing the fully initialized `Simulation` or an error if any step fails.
-pub async fn setup(config: SimulationConfig<Fixed>) -> Result<Simulation> {
+pub async fn setup(config: SimulationConfig) -> Result<Simulation> {
     let environment = EnvironmentBuilder::new()
         .block_settings(BlockSettings::UserControlled)
         .build();
@@ -31,7 +31,7 @@ pub async fn setup(config: SimulationConfig<Fixed>) -> Result<Simulation> {
 
     EventLogger::builder()
         .directory(config.output_directory)
-        .file_name(config.output_file_name.unwrap())
+        .file_name(config.output_file_name)
         .add(counter_agent.counter.events(), "counter")
         .run()?;
 
