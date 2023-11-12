@@ -1,0 +1,2 @@
+bindings_workspace = "simulation" # must be a valid workspace member
+submodules = false                # change to true if you want the submodule bindings to be generated

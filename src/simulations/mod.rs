@@ -5,9 +5,7 @@
 use arbiter_core::environment::Environment;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-use tokio::sync::Semaphore;
 
-use super::*;
 use crate::agents::Agents;
 
 pub mod counter;
@@ -84,12 +82,9 @@ pub fn batch(config_paths: Vec<String>) -> Result<()> {
             let errors_clone = errors.clone();
             handles.push(tokio::spawn(async move {
                 let result = SimulationType::run(config).await;
-                match result {
-                    Err(e) => {
-                        let mut errors_clone_lock = errors_clone.lock().await;
-                        errors_clone_lock.push(e);
-                    }
-                    Result::Ok(_) => {}
+                if let Err(e) = result {
+                    let mut errors_clone_lock = errors_clone.lock().await;
+                    errors_clone_lock.push(e);
                 }
             }));
         }
