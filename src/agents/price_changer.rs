@@ -1,10 +1,10 @@
 use crate::agents::*;
 use crate::settings::{GBMParameters, SimulationConfig};
-use arbiter_core::bindings::liquid_exchange::LiquidExchange;
+use arbiter_bindings::bindings::liquid_exchange::LiquidExchange;
 use arbiter_core::environment::Environment;
-use arbiter_core::math::{float_to_wad, GeometricBrownianMotion, StochasticProcess, Trajectories};
-use arbiter_core::middleware::RevmMiddleware;
+use arbiter_core::{math::float_to_wad, middleware::RevmMiddleware};
 use ethers::utils::parse_ether;
+use RustQuant::stochastics::{GeometricBrownianMotion, StochasticProcess, Trajectories};
 
 /// The [`PriceChanger`] holds the data and has methods that allow it to update
 /// the price of the [`LiquidExchange`].

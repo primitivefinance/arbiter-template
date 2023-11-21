@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
-use arbiter_core::{
-    bindings::arbiter_token::ArbiterToken, environment::Environment, middleware::RevmMiddleware,
-};
+use arbiter_bindings::bindings::arbiter_token::ArbiterToken;
+use arbiter_core::{environment::Environment, middleware::RevmMiddleware};
 use ethers::types::{Address, U256};
 
 use super::*;
