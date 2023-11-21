@@ -41,7 +41,7 @@ impl SimulationType {
     ///
     /// This function matches on the `SimulationType` to determine which simulation setup to use,
     /// then executes the chosen simulation.
-    async fn run(config: SimulationConfig) -> Result<()> {
+    pub async fn run(config: SimulationConfig) -> Result<()> {
         let simulation = match config.simulation {
             SimulationType::SimulatedPricePath => {
                 price_path_simulation::setup(config.clone()).await?
