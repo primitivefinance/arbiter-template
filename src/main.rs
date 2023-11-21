@@ -1,7 +1,4 @@
-use std::{
-    fs::{self, DirEntry},
-    time::Instant,
-};
+use std::time::Instant;
 
 use anyhow::Result;
 use clap::{ArgAction, CommandFactory, Parser, Subcommand};
@@ -13,7 +10,7 @@ pub mod simulations;
 
 /// Represents command-line arguments passed to this binary.
 #[derive(Parser)]
-#[clap(name = "Excalibur")]
+#[clap(name = "Template")]
 #[clap(version = env!("CARGO_PKG_VERSION"))]
 #[clap(about = "Simulation driven development.", long_about = None)]
 #[clap(author)]
@@ -53,7 +50,8 @@ enum Commands {
 /// By default, if no configuration path is provided, it will read from "src/config/".
 ///
 /// These simulations are performed in Arbiter's in memory revm instance and with the exposed RevmMiddleware.
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     let args = Args::parse();
 
     match &args.command {
@@ -61,9 +59,11 @@ fn main() -> Result<()> {
             println!("Reading from config path: {}", config_path);
             let start = Instant::now();
             // This is the entry point for the simulation
-            let files = read_toml_files(config_path)?;
+            let files = read_toml_file(config_path)?;
             println!("files: {:?}", files);
-            simulations::batch(files)?;
+            let simulation = settings::SimulationConfig::new(files.clone())?;
+            println!("simulation: {:?}", simulation);
+            simulations::SimulationType::run(simulation).await.unwrap();
             let duration = start.elapsed();
             println!("Total duration of simulations: {:?}", duration);
         }
@@ -72,17 +72,21 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-// Function to read .toml files from a directory and return their paths
-fn read_toml_files(dir: &str) -> Result<Vec<String>, std::io::Error> {
-    let paths = fs::read_dir(dir)?
-        .filter_map(Result::ok)
-        .filter(is_toml_file)
-        .map(|entry| entry.path().to_string_lossy().into_owned())
-        .collect();
-    Ok(paths)
+// Function to read a .toml file and return its path
+fn read_toml_file(file: &str) -> Result<String, std::io::Error> {
+    if is_toml_file(file) {
+        Ok(file.to_string())
+    } else {
+        Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            "Not a TOML file",
+        ))
+    }
 }
 
-// Helper function to check if a DirEntry is a .toml file
-fn is_toml_file(entry: &DirEntry) -> bool {
-    entry.path().extension().map_or(false, |ext| ext == "toml")
+// Helper function to check if a file is a .toml file
+fn is_toml_file(file: &str) -> bool {
+    std::path::Path::new(file)
+        .extension()
+        .map_or(false, |ext| ext == "toml")
 }
