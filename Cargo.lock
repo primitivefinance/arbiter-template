@@ -236,9 +236,9 @@ dependencies = [
 
 [[package]]
 name = "arbiter-bindings"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09f923bf63cf3f7ae0111d1446f4fab6aa84b2ae5690ba6036c6969751f2f2aa"
+checksum = "218344fec90d43f490386db7fa6901f3efe6a7709cac938fdc2dbb04501eb771"
 dependencies = [
  "ethers",
  "revm",

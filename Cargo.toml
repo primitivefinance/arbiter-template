@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 arbiter-core = { version = "0.8.0" }
-arbiter-bindings = { version = "0.1.0" }
+arbiter-bindings = { version = "0.1.1" }
 RustQuant = { version = "0.0.38", features = ["seedable"] }
 tokio = { version = "1.34.0", features = ["full"] }
 ethers = { version = "2.0.10" }
