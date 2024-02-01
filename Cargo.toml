@@ -13,5 +13,5 @@ serde_json = { version = "1.0.107" }
 serde = { version = "1.0.189", features = ["derive"] }
 anyhow = { version = "1.0.75" }
 async-trait = "0.1.74"
-config = "0.13.3"
+config = "0.14.0"
 clap = { version = "4.4.8", features = ["derive"] }
