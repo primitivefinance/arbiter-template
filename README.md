@@ -1,8 +1,8 @@
 # Arbiter Template
 
-Minimal template for simulating contracts with arbiter. This template is used by the `arbiter init` command when starting new simulations. This template provides a framework for performantly simulating Agent Based Models (ABM) with evm parity. In this model you can think of any things that happens as an action of an agent. Agents can own keys and externally owned accounts, they can interact with each other and they can interact with smart contracts. 
+Minimal template for simulating contracts with arbiter. This template provides an example of how to build Agent-Based Models (ABM) with evm parity. In this model, you can think of anything that happens as a *behavior* of an agent. Agents can have externally owned accounts (EOAs), interact with each other, and interact with smart contracts. 
 
-This repository has some example agents including a [`TokenAdmin`](src/agents/token_admin.rs), [`BlockAdmin`](src/agents/block_admin.rs), and [`CounterAgent`](src/agents/counter_agent.rs) which their own functionality and responsibilities. We also give an example of [how to parametarize your simulations](src/settings/mod.rs) with a configuration file containing different price paths and price path parameters. These can be played with to see how the simulation changes. Furthermore we provide an [api to batch simulations](src/simulations/mod.rs) and run them in parallel. This is useful for running many simulations with different parameters.
+This repository has an example behavior [`Incrementer`](src/bahaviors/incrementer.rs). The current design philosophy is that the user should only ever have to build agent behaviors implementing the [`Behavior`](https://github.com/primitivefinance/arbiter/blob/fe6b556d715d641aa9378ae20560629ec6ba5b43/arbiter-engine/src/machine.rs#L73) trait. In this example, the `Incrementer` behavior is configured with a [config file](https://github.com/primitivefinance/arbiter-template/blob/main/configs/example.toml). Configuring behaviors with a config file is a design choice we made to enable versatile parameterization at runtime as opposed to compile time.
 
 ### Prerequisites
 
@@ -10,27 +10,19 @@ This repository has some example agents including a [`TokenAdmin`](src/agents/to
 - [Foundry](https://book.getfoundry.sh/getting-started/installation) is used behind the scenes to generate rust contract bindings. Make sure you have forge installed and up to date.
 
 ## Usage
-1. Install arbiter
 
-``` bash
-cargo install arbiter
-```
-
-2. Create arbiter project from this template
+> `cargo generate` is a tool to create new Rust projects from pre-existing templates. It is used to create a new project from a template.
 
 ``` bash 
-arbiter init <name_of_project>
+cargo install cargo-generate
+```
+Use the template
+```
+cargo generate --git https://github.com/primitivefinance/arbiter-template
 ```
 
-3. Run the project
+
+> Run the template project
 ```bash
-cargo run simulate src/config/counter.toml
-```
-
-## Documentation
-
-The documentation for the repository is primarily inline with the code. Cargo automatically can compile these into a browsable format. To view the documentation run the following command:
-
-```bash
-cargo doc --open
+cargo run simulate configs/example.toml -vvv
 ```
