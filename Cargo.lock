@@ -195,9 +195,9 @@ dependencies = [
 
 [[package]]
 name = "arbiter-core"
-version = "0.10.1"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2864029729ccae7d474296d71b12ebc70c091562040a88b6d3fd3f52d8db6c7e"
+checksum = "7a6168baef0eb9e7c22d4b02e1edf526a4588edc97551b0cde96ec296f9b801b"
 dependencies = [
  "arbiter-bindings",
  "async-stream",
