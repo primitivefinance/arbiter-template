@@ -26,3 +26,6 @@ cargo generate --git https://github.com/primitivefinance/arbiter-template
 ```bash
 cargo run simulate configs/example.toml -vvv
 ```
+
+## Log Verbosity
+The `-vvv` flag is used to increase the verbosity of the logs. The more `v`'s, the more verbose the logs.
