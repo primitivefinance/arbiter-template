@@ -249,9 +249,9 @@ dependencies = [
 
 [[package]]
 name = "arbiter-macros"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a685a9ee2090c7113919cb78d9e87e294b4f65e22f43c5938c301b853b78e411"
+checksum = "622766e957f73f9cbe425ca4533746b563a3b3a959697f178bb6789f3b8871be"
 dependencies = [
  "quote",
  "syn 2.0.48",
