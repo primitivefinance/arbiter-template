@@ -12,6 +12,6 @@ arbiter-engine = { version = "0.2.0" }
 tokio = { version = "1.36.0", features = ["full"] }
 ethers = { version = "2.0.10" }
 serde = { version = "1.0.189", features = ["derive"] }
-anyhow = { version = "1.0.79" }
+anyhow = { version = "1.0.80" }
 async-trait = "0.1.74"
 clap = { version = "4.4.8", features = ["derive"] }
