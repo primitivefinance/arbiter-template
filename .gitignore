@@ -13,6 +13,5 @@ docs/
 
 # Dotenv file
 .env
-*.lock
 
 analysis/counter/*
