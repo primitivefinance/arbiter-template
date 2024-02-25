@@ -5,11 +5,11 @@ use behaviors::Behaviors;
 
 /// If you forked `arbiter`, then to run this example, you can do the following from the `arbiter/` directory:
 /// ```sh
-/// cargo run --example template simulate examples/project/configs/example.toml
+/// cargo run --example template simulate examples/template/configs/example.toml
 /// ```
 /// If you would like to see more detailed logs, you can run the following:
 /// ```sh
-/// cargo run --example template simulate examples/project/configs/example.toml -vvv
+/// cargo run --example template simulate examples/template/configs/example.toml -vvv
 /// ```
 /// to get `debug` level logs.
 ///
