@@ -26,7 +26,7 @@ impl Behavior<IncrementedFilter> for Incrementer {
         &mut self,
         client: Arc<ArbiterMiddleware>,
         _messager: Messager,
-    ) -> Result<EventStream<IncrementedFilter>> {
+    ) -> Result<Option<EventStream<IncrementedFilter>>> {
         debug!("Incrementer starting up");
         let counter = ModifiedCounter::deploy(client.clone(), ())?.send().await?;
         let stream = stream_event(counter.incremented_filter());
@@ -35,7 +35,7 @@ impl Behavior<IncrementedFilter> for Incrementer {
         let curr_number = counter.number().call().await?;
         debug!("Incremented to: {}", curr_number);
         self.counter = Some(counter);
-        Ok(stream)
+        Ok(Some(stream))
     }
 
     async fn process(&mut self, _event: IncrementedFilter) -> Result<ControlFlow> {
