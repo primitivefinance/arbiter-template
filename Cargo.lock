@@ -223,9 +223,9 @@ dependencies = [
 
 [[package]]
 name = "arbiter-engine"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0553d66d507f24b9a7f63b783e9a2a37edaa5d93bfc9f23a3587dfcd65c0c3a6"
+checksum = "e540e9fa8de7802a1269f493e8f70ae7e3adcab632f1faabe79e3d47d48b6f57"
 dependencies = [
  "anyhow",
  "arbiter-bindings",
